@@ -1,6 +1,8 @@
 public  with sharing virtual class TriggerHandler {
     
-    public TriggerHandler(){}
+    public TriggerHandler() {
+        
+    }
     
     // main method that will be called during execution
     public void run(){
@@ -22,11 +24,31 @@ public  with sharing virtual class TriggerHandler {
     }
 
     // context-specific methods for override
-    @TestVisible protected virtual void beforeInsert() {}
-    @TestVisible protected virtual void beforeUpdate() {}
-    @TestVisible protected virtual void beforeDelete() {}
-    @TestVisible protected virtual void afterInsert() {}
-    @TestVisible protected virtual void afterUpdate() {}
-    @TestVisible protected virtual void afterDelete() {}
-    @TestVisible protected virtual void afterUndelete() {}
+    @TestVisible protected virtual void beforeInsert() {
+
+    }
+
+    @TestVisible protected virtual void beforeUpdate() {
+
+    }
+
+    @TestVisible protected virtual void beforeDelete() {
+
+    }
+
+    @TestVisible protected virtual void afterInsert() {
+
+    }
+
+    @TestVisible protected virtual void afterUpdate() {
+
+    }
+
+    @TestVisible protected virtual void afterDelete() {
+
+    }
+
+    @TestVisible protected virtual void afterUndelete() {
+
+    }
 }
