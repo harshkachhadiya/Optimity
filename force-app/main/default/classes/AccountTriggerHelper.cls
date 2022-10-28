@@ -27,5 +27,18 @@ public with sharing class AccountTriggerHelper {
     */
     public static void main(List<Account> newAccounts, Map<Id, Account> oldMapAccounts) {
 
+        try {
+
+        } catch(exception ex){
+            System.debug('**********Error**********');
+            System.debug('Class - AccountTriggerHelper');
+            System.debug('Method - main');
+            System.debug('Line Number :- ' + ex.getLineNumber());
+            System.debug('Type :- ' + ex.getTypeName());
+            System.debug('Message :- ' + ex.getMessage());
+            System.debug('*************************');
+        
+            throw new AuraHandledException(ex.getMessage());
+        }
     }
 }
