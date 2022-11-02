@@ -1,5 +1,13 @@
 public with sharing class SObjectUtilityController {
     
+    public class FieldSetDetailWrapper {
+        public String apiName {get; set;}
+        public String label {get; set;}
+        public Boolean isRequired {get; set;}
+        public Boolean isDBRequired {get; set;}
+        public String type {get; set;}
+    }
+
     public static Map<String, String> getPicklistOptions(String sobjectApiName, String fieldApiName) {
         
         Map<String, String> result = new Map<String, String>();
@@ -11,7 +19,7 @@ public with sharing class SObjectUtilityController {
         return result;
     }
     
-    public static Map<String, List<String>> getDependentPicklistValues(Schema.SObjectField dependToken) {
+    public static Map<String, List<String>> getDependentPicklistValues(Schema.sObjectField dependToken) {
         
         Map<String, List<String>> dependentPicklistValues = new Map<String, List<String>>();
         
@@ -19,7 +27,7 @@ public with sharing class SObjectUtilityController {
         Schema.DescribeFieldResult depend = dependToken.getDescribe();
         
         //Get dependent field controlling field 
-        Schema.SObjectField controlToken = depend.getController();
+        Schema.sObjectField controlToken = depend.getController();
         
         //Check controlling field is not null
         if (controlToken == null) {
@@ -75,45 +83,37 @@ public with sharing class SObjectUtilityController {
         return dependentPicklistValues;
     }
 
-    public static List<Schema.FieldSetMember> getFieldSetDetails(String sobjectApiName, String fieldSetApiName) {
+    public static List<FieldSetDetailWrapper> getFieldSetDetails(String sobjectApiName, String fieldSetApiName) {
+
+        List<FieldSetDetailWrapper> result = new List<FieldSetDetailWrapper>();
         
-        return Schema.getGlobalDescribe().get(sobjectApiName.toLowerCase()).getDescribe().FieldSets.getMap().get(fieldSetApiName).getFields(); 
-    }   
-    
-    public static List<String> getFieldApiNamesByFieldSet(String sobjectApiName, String fieldSetApiName) {
-        
-        List<String> result = new List<String>();
-        
-        for(Schema.FieldSetMember fieldSetMember : getFieldSetDetails(sobjectApiName, fieldSetApiName)) {
-            result.add(fieldSetMember.getFieldPath());
+        for(Schema.FieldSetMember fieldSetMemberObj : Schema.getGlobalDescribe().get(sobjectApiName.toLowerCase()).getDescribe().FieldSets.getMap().get(fieldSetApiName).getFields()) {
+            
+            FieldSetDetailWrapper wrapper = new FieldSetDetailWrapper();
+            wrapper.apiName = fieldSetMemberObj.getFieldPath();
+            wrapper.label = fieldSetMemberObj.getLabel();
+            wrapper.isRequired = fieldSetMemberObj.getRequired();
+            wrapper.isDBRequired = fieldSetMemberObj.getDbRequired();
+            wrapper.type = String.valueOf(fieldSetMemberObj.getType());
+
+            result.add(wrapper);
         }
-        
+
         return result;
-    }
+    }   
 
     public static Id getRecordTypeIdByName(String sobjectApiName, String recordTypeName) {
-        
+
         return Schema.getGlobalDescribe().get(sobjectApiName).getDescribe().getRecordTypeInfosByName().get(recordTypeName).getRecordTypeId();
     }
 
     public static Id getRecordTypeIdByDeveloperName(String sobjectApiName, String recordTypeDeveloperName) {
-        
+
         return Schema.getGlobalDescribe().get(sobjectApiName).getDescribe().getRecordTypeInfosByDeveloperName().get(recordTypeDeveloperName).getRecordTypeId();
     }
 
     public static String getSobjectApiNameById(Id recordId) {
-        
+
         return recordId.getSObjectType().getDescribe().getName();
-    }
-
-    public static List<String> getFieldApiNamesByFieldSet(String sobjectApiName) {
-        
-        List<String> result = new List<String>();
-
-        for(Schema.SObjectField field : Schema.getGlobalDescribe().get().getDescribe().fields.getMap().values()) {
-            result.add(field.getDescribe().getName());
-        }
-
-        return result;
     }
 }
